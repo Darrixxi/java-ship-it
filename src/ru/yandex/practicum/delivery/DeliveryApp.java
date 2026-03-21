@@ -84,7 +84,6 @@ public class DeliveryApp {
 
     private static void addParcel() {
 
-        Parcel parcel;
         System.out.println("Какой тип посылки хотите отправить?(1 - Стандартная, 2 - Хрупкая, 3 - Скоропортящаяся )");
         int type = Integer.parseInt(scanner.nextLine());
         System.out.println("Краткое описание посылки:");
@@ -98,30 +97,31 @@ public class DeliveryApp {
         int sendDay = scanner.nextInt();
         scanner.nextLine();
 
+
         switch (type) {
             case 1:
-                parcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
-                if (standardBox.addParcel((StandardParcel) parcel)) {
-                    allParcels.add(parcel);
-                    System.out.println("Посылка добавлена: " + parcel.description);
+               StandardParcel standardParcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
+                if (standardBox.addParcel(standardParcel)) {
+                    allParcels.add(standardParcel);
+                    System.out.println("Посылка добавлена: " + standardParcel.description);
                 }
                 break;
             case 2:
-                parcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
-                if (fragileBox.addParcel((FragileParcel) parcel)) {
-                    allParcels.add(parcel);
-                    System.out.println("Посылка добавлена: " + parcel.description);
-                    trackables.add((Trackable) parcel);
+               FragileParcel fragileParcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
+                if (fragileBox.addParcel(fragileParcel)) {
+                    allParcels.add(fragileParcel);
+                    System.out.println("Посылка добавлена: " + fragileParcel.description);
+                    trackables.add(fragileParcel);
                 }
                 break;
             case 3:
                 System.out.println("Сколько дней может храниться?");
                 int timeToLive = scanner.nextInt();
                 scanner.nextLine();
-                parcel = new PerishableParcel(description, weight, deliveryAddress, sendDay, timeToLive);
-                if (perishableBox.addParcel((PerishableParcel) parcel)) {
-                    allParcels.add(parcel);
-                    System.out.println("Посылка добавлена: " + parcel.description);
+                PerishableParcel perishableParcel = new PerishableParcel(description, weight, deliveryAddress, sendDay, timeToLive);
+                if (perishableBox.addParcel(perishableParcel)) {
+                    allParcels.add(perishableParcel);
+                    System.out.println("Посылка добавлена: " + perishableParcel.description);
                 }
                 break;
             default:
@@ -135,18 +135,12 @@ public class DeliveryApp {
         scanner.nextLine();
 
         for (Parcel parcel : allParcels) {
-            if (parcel instanceof PerishableParcel) {
-                PerishableParcel perishableParcel = (PerishableParcel) parcel;
-                if (perishableParcel.isExpired(currentDay)) {
+                if (parcel.isExpired(currentDay)) {
                     System.out.println("Посылка " + parcel.getDescription() + " просрочена!");
                 } else {
                     parcel.packageItem();
                     parcel.deliver();
                 }
-            } else {
-                parcel.packageItem();
-                parcel.deliver();
-            }
         } // Пройти по allParcels, вызвать packageItem() и deliver()
     }
 

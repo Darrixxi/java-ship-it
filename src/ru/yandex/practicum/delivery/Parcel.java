@@ -21,7 +21,11 @@ public abstract class Parcel {
         System.out.println("Посылка <<" + description + ">> доставлена по адресу " + deliveryAddress);
     }
 
-    protected abstract int getBaseCost();//добавьте реализацию и другие необходимые классы
+    protected abstract int getBaseCost();
+
+    public boolean isExpired(int currentDay){
+        return false;
+    }//добавьте реализацию и другие необходимые классы
 
     public int calculateDeliveryCost() {
         return weight * getBaseCost();
